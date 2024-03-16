@@ -32,9 +32,17 @@ Route::get('/profesores', [ProfesorController::class,'index'])->middleware(['aut
 
 Route::post('/gracias', [GraciasController::class,'index'])->name('gracias');
 
-Route::get('/admin', [AdminController::class,'index'])->name('admin');
 
-Route::post('/update', [UpdateController::class,'index'])->name('update');
+
+Route::middleware('admin')->group(function () {
+    Route::resource('admin', AdminController::class)->middleware('auth');
+    Route::get('/admin', [AdminController::class,'index'])->name('admin');
+    Route::resource('update', UpdateController::class)->middleware('auth');
+    Route::post('/update', [UpdateController::class,'index'])->name('update');
+});
+
+//Route::get('/admin', [AdminController::class,'index'])->name('admin');
+//Route::post('/update', [UpdateController::class,'index'])->name('update');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
